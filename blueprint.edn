@@ -1,0 +1,11 @@
+{:itonami.blueprint/id "cloud-itonami-9103"
+ :itonami.blueprint/name "Botanical and zoological gardens and nature reserves activi..."
+ :itonami.blueprint/isic-rev5 "9103"
+ :itonami.blueprint/domain :recreation/botanical-zoological
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:cultural-access :data-sovereignty :transparency]
+ :itonami.blueprint/governor :conservation-governor
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/robotics true}
