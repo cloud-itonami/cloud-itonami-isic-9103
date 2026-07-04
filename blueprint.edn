@@ -1,4 +1,4 @@
-{:itonami.blueprint/id "cloud-itonami-9103"
+{:itonami.blueprint/id "cloud-itonami-isic-9103"
  :itonami.blueprint/name "Botanical and zoological gardens and nature reserves activi..."
  :itonami.blueprint/isic-rev5 "9103"
  :itonami.blueprint/domain :recreation/botanical-zoological

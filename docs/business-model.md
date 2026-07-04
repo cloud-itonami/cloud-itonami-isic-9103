@@ -2,7 +2,7 @@
 
 ## Classification
 
-- Repository: `cloud-itonami-9103`
+- Repository: `cloud-itonami-isic-9103`
 - ISIC Rev.5: `9103`
 - Activity: botanical and zoological gardens and nature reserve activities -- living-collection conservation, animal/plant welfare and public access
 - Social impact: cultural/recreational access, data sovereignty, transparent audit

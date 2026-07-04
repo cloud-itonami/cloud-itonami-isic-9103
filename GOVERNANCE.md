@@ -1,6 +1,6 @@
 # Governance
 
-`cloud-itonami-9103` is an OSS open-business blueprint for botanical and zoological gardens and nature reserve activities -- living-collection conservation, animal/plant welfare and public access.
+`cloud-itonami-isic-9103` is an OSS open-business blueprint for botanical and zoological gardens and nature reserve activities -- living-collection conservation, animal/plant welfare and public access.
 Governance covers both the capability layer and the operator model.
 
 ## Maintainers
