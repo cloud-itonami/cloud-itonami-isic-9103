@@ -30,7 +30,15 @@
 
 ## Trust Controls
 
-- no living specimen is transferred or released without human sign-off (a licensed conservationist/veterinarian)
-- a fabricated welfare/health assessment forces a hold, not an override
-- every transfer path is auditable
+- no living specimen is transferred or released without human sign-off
+  (a licensed conservationist/veterinarian)
+- a fabricated jurisdiction citation, incomplete specimen evidence, a
+  body-condition score outside its own species-specific healthy range,
+  or an unresolved welfare (health/behavior) flag -- each forces a
+  hold, not an override
+- a specimen's transfer/release cannot each be finalized twice: a
+  double-transfer or double-release attempt is held off this actor's
+  own specimen facts alone, with no upstream comparison needed
+- every intake, assessment, screening and transfer/release path is
+  auditable
 - emergency manual override paths remain outside LLM control
