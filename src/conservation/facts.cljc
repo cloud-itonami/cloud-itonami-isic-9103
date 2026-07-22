@@ -58,7 +58,16 @@
           :required-evidence ["Gesundheitszeugnis/Tierärztliche Bescheinigung (health/veterinary certificate)"
                               "CITES-/Genehmigungsnachweis (CITES/permit documentation)"
                               "Transport-/Habitatplan (transport/habitat plan)"
-                              "Einrichtungsakkreditierungsnachweis (institutional accreditation record)"]}})
+                              "Einrichtungsakkreditierungsnachweis (institutional accreditation record)"]}
+   "ITA" {:name "Italy"
+          :owner-authority "Ministero dell'Ambiente e della Sicurezza Energetica (MASE)"
+          :legal-basis "Legge 7 febbraio 1992, n. 150 (CITES implementing law -- 'Disciplina dei reati relativi all'applicazione in Italia della convenzione sul commercio internazionale delle specie animali e vegetali in via di estinzione') + Decreto Legislativo 21 marzo 2005, n. 73 (attuazione della direttiva 1999/22/CE relativa alla custodia degli animali selvatici nei giardini zoologici)"
+          :national-spec "Licenza di giardino zoologico rilasciata dal Ministero (D.Lgs. 73/2005 art. 4, subordinata ai requisiti dell'art. 3) + documentazione CITES obbligatoria per il trasferimento di esemplari, pena sanzione penale (L. 150/1992 art. 1, comma 1, lett. f)"
+          :provenance "https://www.mase.gov.it/pagina/giardini-zoologici"
+          :required-evidence ["Certificato sanitario/veterinario (health/veterinary certificate) -- D.Lgs. 73/2005 art. 3(1)(f), programma di trattamenti veterinari preventivi e curativi"
+                              "Documentazione CITES/licenza di importazione-esportazione (CITES/permit documentation) -- L. 150/1992 art. 1(1)(f), detenzione/cessione di esemplari senza la prescritta documentazione è reato"
+                              "Piano di alloggiamento/benessere (transport/habitat plan) -- D.Lgs. 73/2005 art. 3(1)(e) + allegato 1, condizioni di benessere e arricchimento ambientale"
+                              "Registro degli esemplari, aggiornato e trasmesso annualmente al Ministero (institutional accreditation record) -- D.Lgs. 73/2005 art. 3(1)(i)"]}})
 
 (defn spec-basis
   "The jurisdiction's requirement map, or nil -- nil means NO spec-basis,
