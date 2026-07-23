@@ -39,9 +39,8 @@
   the audit trail a regulator/receiving-institution trusting an
   operator needs, and the evidence an operator needs if a transfer or
   release is later disputed."
-  (:require #?(:clj  [clojure.edn :as edn]
-               :cljs [cljs.reader :as edn])
-            [conservation.registry :as registry]
+  (:require [conservation.registry :as registry]
+            [langchain-store.core :as ls]
             [langchain.db :as d]))
 
 (defprotocol Store
@@ -193,9 +192,6 @@
    :transfer-sequence/jurisdiction   {:db/unique :db.unique/identity}
    :release-sequence/jurisdiction    {:db/unique :db.unique/identity}})
 
-(defn- enc [v] (pr-str v))
-(defn- dec* [s] (when s (edn/read-string s)))
-
 (defn- specimen->tx [{:keys [id specimen-name body-condition-score bcs-min-healthy bcs-max-healthy
                              welfare-flag-resolved? transfer-finalized? released?
                              jurisdiction status transfer-number release-number]}]
@@ -239,25 +235,25 @@
          (map #(pull->specimen (d/pull (d/db conn) specimen-pull [:specimen/id %])))
          (sort-by :id)))
   (welfare-screening-of [_ id]
-    (dec* (d/q '[:find ?p . :in $ ?sid
+    (ls/dec* (d/q '[:find ?p . :in $ ?sid
                 :where [?k :welfare-screening/specimen-id ?sid] [?k :welfare-screening/payload ?p]]
               (d/db conn) id)))
   (assessment-of [_ specimen-id]
-    (dec* (d/q '[:find ?p . :in $ ?sid
+    (ls/dec* (d/q '[:find ?p . :in $ ?sid
                 :where [?a :assessment/specimen-id ?sid] [?a :assessment/payload ?p]]
               (d/db conn) specimen-id)))
   (ledger [_]
     (->> (d/q '[:find ?s ?f :where [?e :ledger/seq ?s] [?e :ledger/fact ?f]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (transfer-history [_]
     (->> (d/q '[:find ?s ?r :where [?e :transfer/seq ?s] [?e :transfer/record ?r]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (release-history [_]
     (->> (d/q '[:find ?s ?r :where [?e :release/seq ?s] [?e :release/record ?r]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (next-transfer-sequence [_ jurisdiction]
     (or (d/q '[:find ?n . :in $ ?j
               :where [?e :transfer-sequence/jurisdiction ?j] [?e :transfer-sequence/next ?n]]
@@ -278,10 +274,10 @@
       (d/transact! conn [(specimen->tx value)])
 
       :assessment/set
-      (d/transact! conn [{:assessment/specimen-id (first path) :assessment/payload (enc payload)}])
+      (d/transact! conn [{:assessment/specimen-id (first path) :assessment/payload (ls/enc payload)}])
 
       :welfare-screening/set
-      (d/transact! conn [{:welfare-screening/specimen-id (first path) :welfare-screening/payload (enc payload)}])
+      (d/transact! conn [{:welfare-screening/specimen-id (first path) :welfare-screening/payload (ls/enc payload)}])
 
       :specimen/mark-transferred
       (let [specimen-id (first path)
@@ -291,7 +287,7 @@
         (d/transact! conn
                      [(specimen->tx (assoc specimen-patch :id specimen-id))
                       {:transfer-sequence/jurisdiction jurisdiction :transfer-sequence/next next-n}
-                      {:transfer/seq (count (transfer-history s)) :transfer/record (enc (get result "record"))}])
+                      {:transfer/seq (count (transfer-history s)) :transfer/record (ls/enc (get result "record"))}])
         result)
 
       :specimen/mark-released
@@ -302,12 +298,12 @@
         (d/transact! conn
                      [(specimen->tx (assoc specimen-patch :id specimen-id))
                       {:release-sequence/jurisdiction jurisdiction :release-sequence/next next-n}
-                      {:release/seq (count (release-history s)) :release/record (enc (get result "record"))}])
+                      {:release/seq (count (release-history s)) :release/record (ls/enc (get result "record"))}])
         result)
       nil)
     s)
   (append-ledger! [s fact]
-    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (enc fact)}])
+    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (ls/enc fact)}])
     fact)
   (with-specimens [s specimens]
     (when (seq specimens) (d/transact! conn (mapv specimen->tx (vals specimens)))) s))
