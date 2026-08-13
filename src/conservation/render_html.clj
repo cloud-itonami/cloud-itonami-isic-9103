@@ -179,7 +179,17 @@
   NOT joined to the approval audit facts on [op subject], which is not
   a unique key here (specimen-1 is the subject of a transfer AND a
   release AND a refused second attempt of each, so such a join would
-  silently attribute one op's approver to another op's record)."
+  silently attribute one op's approver to another op's record).
+
+  MEASURED on this repo's MemStore, rather than assumed either way: the
+  register writes (`:assessment/set`, `:welfare-screening/set`) persist
+  the operation's `:payload`, which the `:request-approval` node has
+  already stamped with `:approved-by`, so those DO retain the approver.
+  The two actuation records do NOT -- `commit-record!` re-derives them
+  from `conservation.registry` and never reads `:payload`. The ledger
+  is a third case again: `conservation.operation/commit-fact` has no
+  approver field at all, so no `:committed` fact carries one whatever
+  the register did. All three are reported, not averaged."
   [db]
   (concat
    (for [sp (store/all-specimens db)
@@ -306,6 +316,8 @@
         phase (phase-holds ledger)
         attribution (register-attribution db)
         retained (filter :approver attribution)
+        dropped (remove :approver attribution)
+        ledger-approvers (filter approver-of ledger)
         transfers (store/transfer-history db)
         releases (store/release-history db)
         cov (facts/coverage)]
@@ -379,10 +391,24 @@
      "    <p class=\"muted\">Derived at render time by scanning the committed registers and actuation records for an approver key ("
      (esc (str/join ", " (map nm approver-keys)))
      ") — not by joining records to approval facts on <code>[op, specimen]</code>, which is not a unique key here (<code>specimen-1</code> is the subject of a transfer, a release and a refused second attempt of each, so such a join would attribute one op's approver to another op's record). "
-     (if (seq retained)
-       (str "This run: <strong>" (count retained) " of " (count attribution)
+     (cond
+       (empty? attribution)
+       "This run committed no artifact that could carry an approver."
+       (empty? dropped)
+       (str "This run: <strong>all " (count attribution)
             "</strong> committed artifacts retain the approver on the record itself.")
-       "This run: <strong>no</strong> committed artifact retained the approver.")
+       (empty? retained)
+       "This run: <strong>no</strong> committed artifact retained the approver — it survives only in the run's audit channel, below."
+       :else
+       (str "This run: <strong>" (count retained) " of " (count attribution)
+            "</strong> committed artifacts retain the approver on the record itself; the other "
+            (count dropped)
+            " do not. That split is a property of the store, not of the approval: the register writes"
+            " persist the operation's <code>:payload</code>, which the <code>:request-approval</code> node"
+            " has already stamped with <code>:approved-by</code>, while <code>commit-record!</code>"
+            " re-derives the actuation records from <code>conservation.registry</code> and never reads"
+            " <code>:payload</code>. Reported, not averaged — and re-measured on every render, so this"
+            " page self-corrects if the store changes."))
      "</p>\n"
      "    <table>\n"
      "      <thead><tr><th>Artifact</th><th>Specimen</th><th>Record id</th><th>Approver on record</th></tr></thead>\n"
@@ -390,8 +416,18 @@
      (str/join "\n" (map attribution-row attribution)) "\n"
      "      </tbody>\n"
      "    </table>\n"
-     "    <h3>Approvals granted this run <span class=\"muted\">(audit only — not retained on record)</span></h3>\n"
-     "    <p class=\"muted\">The human handoff is real: <code>interrupt-before #{:request-approval}</code> pauses the graph and the operator resumes it. These <code>:approval-granted</code> facts are emitted on the actor's <code>:audit</code> channel; the <code>:commit</code> node writes <code>conservation.operation/commit-fact</code> to the ledger, which has no approver field, so where the column above reads &ldquo;not retained on record&rdquo; the approver survives only here, in the run's audit channel.</p>\n"
+     "    <h3>Approvals granted this run <span class=\"muted\">"
+     (cond
+       (empty? dropped) "(also retained on every committed record above)"
+       (empty? retained) "(audit only — not retained on any record)"
+       :else (str "(audit only for " (count dropped) " of " (count attribution)
+                  " artifacts — see the column above)"))
+     "</span></h3>\n"
+     "    <p class=\"muted\">The human handoff is real: <code>interrupt-before #{:request-approval}</code> pauses the graph and the operator resumes it. These <code>:approval-granted</code> facts are emitted on the actor's <code>:audit</code> channel. Note the ledger is a third case again, and the strictest: <strong>"
+     (if (seq ledger-approvers)
+       (str (count ledger-approvers) " of " (count ledger) " ledger facts carry an approver key")
+       (str "none of the " (count ledger) " ledger facts carries an approver key"))
+     "</strong> — <code>conservation.operation/commit-fact</code> has no approver field, so a <code>:committed</code> fact never records who approved it even when the register it wrote does. Where the column above reads &ldquo;not retained on record&rdquo;, the approver survives only here, in this run's audit channel.</p>\n"
      "    <table>\n"
      "      <thead><tr><th>Op</th><th>Specimen</th><th>Approved by</th></tr></thead>\n"
      "      <tbody>\n"
