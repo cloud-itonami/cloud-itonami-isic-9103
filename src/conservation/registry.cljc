@@ -29,7 +29,7 @@
   the specimen itself (that is `conservation.operation`'s `:specimen/
   transfer`/`:specimen/release`, always human-gated -- see README
   `Actuation`)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- unsigned-certificate
   "Every certificate this actor produces is UNSIGNED -- signature is the
@@ -73,7 +73,7 @@
     (throw (ex-info "specimen-transfer: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "specimen-transfer: sequence must be >= 0" {})))
-  (let [transfer-number (str (str/upper-case jurisdiction) "-TRN-" (zero-pad sequence 6))
+  (let [transfer-number (str (str/upper jurisdiction) "-TRN-" (zero-pad sequence 6))
         record {"record_id" transfer-number
                 "kind" "specimen-transfer-draft"
                 "specimen_id" specimen-id
@@ -98,7 +98,7 @@
     (throw (ex-info "specimen-release: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "specimen-release: sequence must be >= 0" {})))
-  (let [release-number (str (str/upper-case jurisdiction) "-REL-" (zero-pad sequence 6))
+  (let [release-number (str (str/upper jurisdiction) "-REL-" (zero-pad sequence 6))
         record {"record_id" release-number
                 "kind" "specimen-release-draft"
                 "specimen_id" specimen-id
