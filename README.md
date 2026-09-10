@@ -169,14 +169,14 @@ all.
 
 | File | Role |
 |---|---|
-| `src/conservation/store.cljc` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + separate specimen-transfer/specimen-release history. No dynamically-filed sub-record -- both actuation ops act directly on a pre-seeded specimen, and the double-transfer/double-release guards check dedicated `:transfer-finalized?`/`:released?` booleans rather than a `:status` value |
-| `src/conservation/registry.cljc` | Specimen-transfer + specimen-release draft records, plus `body-condition-out-of-range?`/`bcs-min-healthy`/`bcs-max-healthy` -- the SECOND check in this fleet to combine BOTH directions in ONE check (established by `testlab.registry/within-tolerance?`), and the first to apply per-ENTITY species-specific acceptance bounds rather than per-test-protocol bounds |
-| `src/conservation/facts.cljc` | Per-jurisdiction wildlife/plant-conservation catalog with an official spec-basis citation per entry, honest coverage reporting |
-| `src/conservation/conservationopsllm.cljc` | **ConservationOps-LLM Advisor** -- `mock-advisor` ‖ `llm-advisor`; intake/assessment/welfare-screening/specimen-transfer/specimen-release proposals |
-| `src/conservation/governor.cljc` | **Conservation Governor** -- 4 HARD checks (spec-basis · evidence-incomplete · body-condition-out-of-range, pure ground-truth two-sided range recompute · welfare-flag-unresolved, unconditional evaluation, the TWELFTH grounding of this discipline) + already-transferred/already-released guards + 1 soft (confidence/actuation gate) |
-| `src/conservation/phase.cljc` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (both transfer and release always human; specimen intake is the ONLY auto-eligible op, no direct capital risk) |
-| `src/conservation/operation.cljc` | **OperationActor** -- langgraph-clj StateGraph |
-| `src/conservation/sim.cljc` | demo driver |
+| `src/conservation/store.kotoba` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + separate specimen-transfer/specimen-release history. No dynamically-filed sub-record -- both actuation ops act directly on a pre-seeded specimen, and the double-transfer/double-release guards check dedicated `:transfer-finalized?`/`:released?` booleans rather than a `:status` value |
+| `src/conservation/registry.kotoba` | Specimen-transfer + specimen-release draft records, plus `body-condition-out-of-range?`/`bcs-min-healthy`/`bcs-max-healthy` -- the SECOND check in this fleet to combine BOTH directions in ONE check (established by `testlab.registry/within-tolerance?`), and the first to apply per-ENTITY species-specific acceptance bounds rather than per-test-protocol bounds |
+| `src/conservation/facts.kotoba` | Per-jurisdiction wildlife/plant-conservation catalog with an official spec-basis citation per entry, honest coverage reporting |
+| `src/conservation/conservationopsllm.kotoba` | **ConservationOps-LLM Advisor** -- `mock-advisor` ‖ `llm-advisor`; intake/assessment/welfare-screening/specimen-transfer/specimen-release proposals |
+| `src/conservation/governor.kotoba` | **Conservation Governor** -- 4 HARD checks (spec-basis · evidence-incomplete · body-condition-out-of-range, pure ground-truth two-sided range recompute · welfare-flag-unresolved, unconditional evaluation, the TWELFTH grounding of this discipline) + already-transferred/already-released guards + 1 soft (confidence/actuation gate) |
+| `src/conservation/phase.kotoba` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (both transfer and release always human; specimen intake is the ONLY auto-eligible op, no direct capital risk) |
+| `src/conservation/operation.kotoba` | **OperationActor** -- langgraph-clj StateGraph |
+| `src/conservation/sim.kotoba` | demo driver |
 | `test/conservation/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage |
 
 ## Business-process coverage (honest)

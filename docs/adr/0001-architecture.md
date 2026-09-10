@@ -147,7 +147,7 @@ own explicit statement.
   per-protocol acceptance bounds to per-entity species-specific
   acceptance bounds.
 - (+) The actuation invariant (governor + phase, two layers) is
-  regression-tested by `test/conservation/phase_test.clj`'s `specimen-
+  regression-tested by `test/conservation/phase_test.kotoba`'s `specimen-
   transfer-never-auto-at-any-phase`/`specimen-release-never-auto-at-
   any-phase`.
 - (+) `MemStore` ‖ `DatomicStore` parity is proven by `test/
