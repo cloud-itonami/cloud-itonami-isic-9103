@@ -1,5 +1,5 @@
 (ns conservation.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean specimen through
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean specimen through
   intake -> jurisdiction assessment -> welfare screening -> specimen-
   transfer proposal (always escalates) -> human approval -> commit,
   then through specimen-release proposal (always escalates) -> human
