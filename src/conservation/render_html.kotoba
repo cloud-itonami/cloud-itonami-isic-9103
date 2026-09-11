@@ -8,7 +8,7 @@
   langgraph-clj StateGraph and resumed through the real
   `interrupt-before #{:request-approval}` human handoff) through a
   scenario adapted from this repo's own `conservation.sim` demo driver
-  (`clojure -M:run`, confirmed BEFORE writing this file to produce a
+  (`kbb -M:run`, confirmed BEFORE writing this file to produce a
   sensible ledger against the real seeded specimen ids
   `specimen-1`..`specimen-4` of `conservation.store/demo-data`).
 
@@ -37,7 +37,7 @@
   `(seq (:violations f))` and given their own tables -- and `-main`'s
   build-time invariant counts only the HARD kind.
 
-  Usage: `clojure -M:render-html [out-file]`
+  Usage: `kbb -M:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
   (:require [jp-go-dds.skin]
             [kotoba.lang.text :as str]
@@ -333,7 +333,7 @@
 
      "  <section class=\"card\">\n"
      "    <h2>Specimens</h2>\n"
-     "    <p class=\"muted\">Demo snapshot — build-time-generated from <code>conservation.store</code> via <code>conservation.render-html</code> (<code>clojure -M:render-html</code>). Lifecycle and status columns are the actor's own committed writes, not a hand-typed summary.</p>\n"
+     "    <p class=\"muted\">Demo snapshot — build-time-generated from <code>conservation.store</code> via <code>conservation.render-html</code> (<code>kbb -M:render-html</code>). Lifecycle and status columns are the actor's own committed writes, not a hand-typed summary.</p>\n"
      "    <table>\n"
      "      <thead><tr><th>Specimen</th><th>Name</th><th>Jurisdiction</th><th>Body condition [healthy]</th><th>Welfare flag</th><th>Custody</th><th>Last op status</th></tr></thead>\n"
      "      <tbody>\n"
