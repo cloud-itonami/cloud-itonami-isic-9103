@@ -1,0 +1,31 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a habitat-monitoring robot supports physical
+;; animal/plant welfare checks in botanical gardens, zoos and nature reserves
+;; (ISIC 9103). Its physical work with water: draining an animal pool for
+;; cleaning (the animals are off-exhibit until it is empty) and running the
+;; pool's life-support circulation through the filter house.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-9103"
+ :cases
+ [{:id :animal-pool-drain
+   :kind :tank-drain
+   :procedure "drain a 40 m2 animal pool from 1.5 m depth to 0.1 m through the floor drain for cleaning"
+   :params {:tank-area-m2 40.0 :h0-m 1.5 :h-target-m 0.1 :cd 0.62 :q-in-m3s 0.0 :dt-s 1.0 :max-time-s 86400.0}
+   :sweep {:param :orifice-area-m2 :values [0.005 0.008 0.0123 0.018 0.03]}
+   :quantity :time-to-target-s
+   :limit {:max 7200.0 :basis "estimate: pool empty within 2 hours so cleaning and refill fit inside the morning off-exhibit window"}
+   :boundary {:lo 0.002 :hi 0.05}}
+  {:id :life-support-loop
+   :kind :pipe-flow
+   :procedure "circulate the pool through the filter house: 80 m of pipe, 3 m lift, turning the 60 m3 pool over every two hours"
+   :params {:q-m3s 0.0083 :length-m 80.0 :roughness-m 1.5e-6 :density-kg-m3 1000.0
+            :viscosity-pa-s 1.0e-3 :pump-efficiency 0.6 :elevation-m 3.0}
+   :sweep {:param :diameter-m :values [0.05 0.065 0.08 0.1 0.125]}
+   :quantity :velocity-mps
+   :limit {:max 2.5 :basis "estimate: ~2.5 m/s upper pipe velocity for pumped water lines to limit noise, erosion and head loss"}
+   :boundary {:lo 0.04 :hi 0.2}}]}
